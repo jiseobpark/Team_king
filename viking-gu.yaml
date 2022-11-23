@@ -23,7 +23,7 @@ spec:
         - name: POSTGRES_PASSWORD
           value: dkagh12.
         - name: POSTGRES_HOST
-          value: pgdb-postgresql-primary-hl.default.svc.cluster.local
+          value: postgres-headless.default.svc.cluster.local
         command: ["/bin/bash"]
         args: ["-c", "flask db init && flask db migrate && flask db upgrade && gunicorn --bind 0:8000 'pybo:create_app()'"]
         ports:

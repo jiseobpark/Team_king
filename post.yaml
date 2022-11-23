@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-headless
+  labels:
+    app: postgres-headless
+spec:
+  ports:
+  - port: 80
+    targetPort: 5432
+  clusterIP: None
+  selector:
+    app: postgres
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+ name: postgres-config
+ namespace: default
+ labels:
+  app: postgres
+data:
+ POSTGRES_DB: viking
+ POSTGRES_USER: postgres
+ POSTGRES_PASSWORD: dkagh12.
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvcpvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: nfs-client
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+ name: postgres
+ namespace: default
+ labels:
+  app: postgres
+spec:
+ replicas: 2
+ selector:
+  matchLabels:
+   app: postgres
+ serviceName: postgres-headless
+ template:
+  metadata:
+   labels:
+     app: postgres
+  spec:
+    containers:
+    - name: postgres
+      image: ghcr.io/jasonwsuk/viking_db
+      envFrom:
+      - configMapRef:
+          name: postgres-config
+      ports:
+      - containerPort: 5432
+    volumes:
+    - name: postgres-data
+      persistentVolumeClaim:
+        claimName: postgres-pvcpvc
