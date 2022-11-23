@@ -24,6 +24,8 @@ spec:
           value: dkagh12.
         - name: POSTGRES_HOST
           value: pgdb-postgresql-primary-hl.default.svc.cluster.local
+          command: ["/bin/bash"]
+          args: ["-c", "flask db init && flask db migrate && flask db upgrade && gunicorn --bind 0:8000 'pybo:create_app()'"]
         ports:
         - containerPort: 8000
       hostname: slave2p
