@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: viking-gunicorn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: viking-gunicorn
+  template:
+    metadata:
+      labels:
+        app: viking-gunicorn
+    spec:
+      containers:
+      - name: gunicorn
+        image: ghcr.io/jasonwsuk/viking_gunicorn_port
+        env:
+        - name: POSTGRES_DB
+          value: viking
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: dkagh12.
+        - name: POSTGRES_HOST
+          value: pgdb-postgresql-primary-hl.default.svc.cluster.local
+        ports:
+        - containerPort: 8000
+      hostname: slave2p
+      subdomain: viking-gunicorn
