@@ -15,10 +15,14 @@ spec:
       containers:
       - name: nginx
         image: ghcr.io/jasonwsuk/viking_nginx_port
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
         ports:
         - containerPort: 80
         command: ["/bin/bash"]
-        args: ["-c", "cd /etc/nginx/conf.d/ && sed -i 's/GUNICORN_HOST/ARASHIO_SVC_GU_SERVICE_HOST/g' * && sed -i 's/GUNICORN_PORT/ARASHIO_SVC_GU_SERVICE_PORT/g' * && envsubst < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
+        args: ["-c", "cd /etc/nginx/conf.d/ && sed -i 's/GUNICORN_HOST/VIKING_SVC_GU_SERVICE_HOST/g' * && sed -i 's/GUNICORN_PORT/VIKING_SVC_GU_SERVICE_PORT/g' * && envsubst < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
       - name: netshoot
         image: nicolaka/netshoot
         command: ["/bin/bash"]
